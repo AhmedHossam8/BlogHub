@@ -219,11 +219,8 @@ def posts(request):
     
     categories = sorted(set(post['category'] for post in all_posts))
     
-    reversed_posts_list = sorted(posts_list, key=lambda x: x['date'], reverse=True)
-    featured_posts = [post for post in reversed_posts_list if post['published']][:4]
-    
     context = {
-        "posts_list": featured_posts,
+        "posts_list": posts_list,
         "categories": categories,
         "selected_category": selected_category,
         "page_title": "All Posts" if not selected_category else f"Posts in {selected_category}",
@@ -346,3 +343,20 @@ def author_posts(request, author_name):
         'categories': categories,
     }
     return render(request, 'blog/author_posts.html', context)
+
+
+def featured_posts(request):
+    """Featured posts view"""
+    posts_list = all_posts
+    reversed_posts_list = sorted(posts_list, key=lambda x: x['date'], reverse=True)
+    featured_posts = [post for post in reversed_posts_list if post['published']]
+    for post in featured_posts:
+        post['is_featured'] = True
+    
+    featured_posts = featured_posts[:6]
+    
+    context = {
+        "posts_list": featured_posts,
+        'site_name': 'BlogHub',
+    }
+    return render(request, 'blog/featured_posts.html', context)

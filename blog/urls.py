@@ -12,4 +12,5 @@ urlpatterns = [
     path('category/<str:category_name>/', views.category_posts, name='category_posts'),
     path('search/', views.search_posts, name='search_posts'),
     path('author/<str:author_name>/', views.author_posts, name='author_posts'),
+    path('featured-posts/', views.featured_posts, name='featured_posts'),
 ]
