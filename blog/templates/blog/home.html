@@ -1,0 +1,104 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<div class="container-fluid py-5" style="background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); color: #fff;">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">📝 Welcome to {{ site_name }}!</h1>
+        <p class="lead mb-4">{{ tagline }}</p>
+        <a href="{% url 'blog:posts' %}" class="btn btn-light btn-lg shadow-sm rounded-pill px-4 py-2">Read Posts</a>
+    </div>
+</div>
+
+<!-- Featured Alert -->
+{% if is_featured_active %}
+<div class="container mt-5">
+    <div class="alert border-0 rounded-4 shadow-sm p-4" style="background: linear-gradient(90deg, #ffd194, #70e1f5);">
+        <h2 class="alert-heading fw-bold">⭐ FEATURED TOPIC!</h2>
+        <p class="mb-0 fs-5">Check out our featured topic: <span class="fw-semibold">{{ spotlight_topic }}</span>!</p>
+    </div>
+</div>
+{% endif %}
+
+<!-- Blog Statistics -->
+<div class="container my-5">
+    <div class="row g-4 text-center">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm rounded-4 p-4" style="background: #ffffff;">
+                <h3 class="text-primary fw-bold">{{ total_posts }}</h3>
+                <p class="text-muted mb-0">Published Posts</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm rounded-4 p-4" style="background: #ffffff;">
+                <h3 class="text-primary fw-bold">{{ total_authors }}</h3>
+                <p class="text-muted mb-0">Active Writers</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm rounded-4 p-4" style="background: #ffffff;">
+                <h3 class="text-primary fw-bold">{{ founded_year|default:"2025" }}</h3>
+                <p class="text-muted mb-0">Established</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="container my-5">
+    <h2 class="text-center mb-4 fw-bold">Why Choose {{ site_name }}?</h2>
+    <div class="row g-4">
+        {% for feature in features %}
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm rounded-4 text-center p-4 feature-card"
+                style="transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                <h3 class="mb-3">{{ feature.icon }}</h3>
+                <h5 class="card-title fw-semibold mb-2">{{ feature.title }}</h5>
+                <p class="card-text text-muted">{{ feature.description }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Featured Topics -->
+<div class="container my-5">
+    <h2 class="text-center mb-4 fw-bold">Popular Topics</h2>
+    <div class="row g-4 justify-content-center">
+        {% for topic in featured_topics %}
+        <div class="col-md-4 col-lg-3">
+            <div class="list-group shadow-sm rounded-4 overflow-hidden mb-3">
+                <a href="#" class="list-group-item list-group-item-action text-center text-white fw-semibold"
+                    style="background: linear-gradient(135deg, #89f7fe, #66a6ff);">
+                    {{ topic }}
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+    .feature-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .list-group-item {
+        padding: 10px 10px;
+    }
+
+    .list-group-item:hover {
+        filter: brightness(1.1);
+    }
+
+    .btn:hover {
+        filter: brightness(1.05);
+    }
+</style>
+
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "blog/base.html" %}
+
+{% block title %}About{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<div class="bg-gradient text-white py-5" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold">About {{ company_name }}</h1>
+        <p class="lead">Serving customers since {{ founded_year }}</p>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container my-5">
+    <div class="row g-4">
+        <!-- Left Column -->
+        <div class="col-lg-8">
+            <!-- Mission -->
+            <div class="mb-5">
+                <h2 class="fw-bold mb-3">Our Mission</h2>
+                <p class="lead text-secondary">{{ mission }}</p>
+            </div>
+
+            <!-- Team -->
+            <div class="mb-5">
+                <h2 class="fw-bold mb-3">Our Team</h2>
+                <p>We're a team of <strong>{{ team_size }}</strong> dedicated professionals working to bring you the
+                    best experience.</p>
+            </div>
+
+            <!-- Values -->
+            <div class="mb-5">
+                <h2 class="fw-bold mb-4">Our Values</h2>
+                <div class="row g-4">
+                    {% for value in values %}
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-0 rounded-4 text-center value-card">
+                            <div class="card-body d-flex align-items-center justify-content-center">
+                                <h5 class="card-title fw-semibold">{{ value }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-lg-4">
+            <!-- Quick Stats -->
+            <div class="card shadow-sm rounded-4 mb-4 border-0">
+                <div class="card-body">
+                    <h4 class="card-title fw-bold mb-3">Quick Stats</h4>
+                    <hr>
+                    <p><strong>Founded:</strong> {{ founded_year }}</p>
+                    <p><strong>Team Size:</strong> {{ team_size }} people</p>
+                    <p><strong>Mission:</strong> {{ mission }}</p>
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="card shadow-sm rounded-4 bg-gradient text-white text-center border-0"
+                style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Ready to Shop?</h5>
+                    <a href="/" class="btn btn-light fw-semibold rounded-pill px-4 py-2">Go to Homepage</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+    .value-card {
+        background: #ffffff;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: default;
+    }
+
+    .value-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .bg-gradient {
+        color: #fff;
+    }
+</style>
+
+{% endblock %}

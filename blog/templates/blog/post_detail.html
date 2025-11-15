@@ -1,0 +1,155 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post.title }} - BlogHub</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+
+<body style="background: #f4f6f8; color: #333;">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light"
+        style="background: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">� BlogHub</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/posts/">Posts</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/about/">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/contact/">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Breadcrumb Navigation -->
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb p-2 rounded-3" style="background: #ffffff;">
+                <li class="breadcrumb-item"><a class="text-muted" href="/">Home</a></li>
+                <li class="breadcrumb-item"><a class="text-muted" href="/posts/">Posts</a></li>
+                <li class="breadcrumb-item active text-dark" aria-current="page">{{ post.title }}</li>
+            </ol>
+        </nav>
+    </div>
+
+    <!-- Post Details -->
+    <div class="container my-5">
+        <div class="row justify-content-center">
+
+            <!-- Post Cover -->
+            <div class="col-md-10">
+                <div class="card mb-4 shadow-sm rounded-4 post-cover"
+                    style="min-height: 300px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #a8edea, #fed6e3);">
+                    <h1 class="text-white display-1 fw-bold">�</h1>
+                </div>
+            </div>
+
+            <!-- Post Content -->
+            <div class="col-md-10">
+                <h1 class="display-4 fw-bold mb-3" style="color: #2b2b2b;">{{ post.title }}</h1>
+
+                <!-- Meta Information -->
+                <p class="text-muted mb-3">
+                    <span class="badge text-white me-2" style="background: linear-gradient(90deg, #89f7fe, #66a6ff);">{{ post.category }}</span>
+                    ✍️ By <strong>{{ post.author }}</strong> |
+                    📅 {{ post.date|date:"M d, Y" }} |
+                    ⏱ {{ post.reading_time }} read |
+                    👁 {{ post.views }} views
+                </p>
+
+                <!-- Published Status -->
+                <div class="mb-4">
+                    {% if post.published %}
+                    <span class="badge text-white px-3 py-2"
+                        style="background: linear-gradient(90deg, #43e97b, #38f9d7);">✔ Published</span>
+                    {% else %}
+                    <span class="badge text-dark px-3 py-2"
+                        style="background: linear-gradient(90deg, #fddb92, #d1fdff);">📝 Draft</span>
+                    {% endif %}
+                </div>
+
+                <!-- Content Card -->
+                <div class="card mb-4 shadow-sm rounded-4" style="background: #ffffff;">
+                    <div class="card-body">
+                        <h5 class="card-title fw-semibold text-muted">Article Content</h5>
+                        <p class="card-text">{{ post.content }}</p>
+                    </div>
+                </div>
+
+                <!-- Tags Card -->
+                <div class="card mb-4 shadow-sm rounded-4" style="background: #f9f9f9;">
+                    <div class="card-body">
+                        <h5 class="card-title fw-semibold text-muted">Tags</h5>
+                        <div>
+                            {% for tag in tags %}
+                            <span class="badge tag-badge me-2 mb-1">#{{ tag }}</span>
+                            {% endfor %}
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Engagement Buttons -->
+                {% if post.published %}
+                <div class="d-grid gap-2 mb-4">
+                    <button class="btn rounded-pill" style="background: #66a6ff; color: #fff;">👍 Like this
+                        Post</button>
+                    <button class="btn btn-outline-secondary rounded-pill">🔖 Bookmark for Later</button>
+                </div>
+                {% else %}
+                <button class="btn btn-secondary btn-lg w-100 rounded-pill" disabled>Currently Unavailable</button>
+                {% endif %}
+
+                <!-- Back Button -->
+                <div class="mt-4">
+                    <a href="/posts/" class="btn btn-outline-dark rounded-pill">← Back to All Posts</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-light text-dark text-center py-3 mt-5 shadow-sm">
+        <p class="mb-0">&copy; 2025 BlogHub. All rights reserved.</p>
+    </footer>
+
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- Custom Styles -->
+    <style>
+        .post-cover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 1rem;
+        }
+
+        .post-cover:hover {
+            transform: scale(1.03);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .tag-badge {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tag-badge:hover {
+            background: #89f7fe;
+            color: #fff;
+        }
+
+        .btn:hover {
+            filter: brightness(1.05);
+        }
+    </style>
+</body>
+
+</html>
