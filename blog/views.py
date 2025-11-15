@@ -219,8 +219,11 @@ def posts(request):
     
     categories = sorted(set(post['category'] for post in all_posts))
     
+    reversed_posts_list = sorted(posts_list, key=lambda x: x['date'], reverse=True)
+    featured_posts = [post for post in reversed_posts_list if post['published']][:4]
+    
     context = {
-        "posts_list": posts_list,
+        "posts_list": featured_posts,
         "categories": categories,
         "selected_category": selected_category,
         "page_title": "All Posts" if not selected_category else f"Posts in {selected_category}",
