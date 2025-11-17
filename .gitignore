@@ -17,4 +17,4 @@ htmlcov/
 dist/
 build/
 .pytest_cache/
-.cache/
+.cache/.env
