@@ -51,8 +51,7 @@
                 <option value="">---------</option>
                 {% for pk, name in form.category.field.choices %}
                 {% if pk %}
-                <option value="{{ pk }}" {% if form.category.value|stringformat:"s"==pk|stringformat:"s" %}selected{%
-                    endif %}>
+                <option value="{{ pk }}" {% if form.category.value|stringformat:"s" == pk|stringformat:"s" %}selected{% endif %}>
                     {{ name }}
                 </option>
                 {% endif %}
@@ -88,8 +87,7 @@
             <select name="status" class="form-select {% if form.status.errors %}is-invalid{% endif %}"
                 id="{{ form.status.id_for_label }}">
                 {% for value, label in form.status.field.choices %}
-                <option value="{{ value }}" {% if form.status.value==value or form.status.value|stringformat:"s"==value
-                    %}selected{% endif %}>
+                <option value="{{ value }}" {% if form.status.value == value or form.status.value|stringformat:"s" == value %}selected{% endif %}>
                     {{ label }}
                 </option>
                 {% endfor %}
@@ -118,7 +116,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Create Post</button>
-        <a href="{% url 'blog:post-list' %}" class="btn btn-secondary">Cancel</a>
+        <a href="{% url 'blog:posts' %}" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
 {% endblock %}

@@ -177,8 +177,8 @@ def post_detail(request, slug):
     )
     
     # Increment view count
-    post.view_count += 1
-    post.save(update_fields=['view_count'])
+    post.views_count += 1
+    post.save(update_fields=['views_count'])
     
     # Get related posts (same category)
     related_posts = Post.objects.filter(
@@ -365,8 +365,8 @@ def post_detail_fbv(request, slug):
         status=Post.Status.PUBLISHED
     )
 
-    post.view_count += 1
-    post.save(update_fields=['view_count'])
+    post.views_count += 1
+    post.save(update_fields=['views_count'])
 
     comments = post.comments.filter(is_approved=True)
 
@@ -459,7 +459,7 @@ def post_delete(request, slug):
     if request.method == "POST":
         post.delete()
         messages.success(request, 'Post deleted successfully!')
-        return redirect("blog:post_list")
+        return redirect("blog:posts")
 
     categories = Category.objects.all()
     authors = User.objects.filter(posts__status='published').distinct()
