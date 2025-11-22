@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock %}</title>
+    <title>{% block title %}{{ site_name }}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
 </head>
 
@@ -20,7 +20,8 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <!-- Left Nav -->
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'blog:home' %}">Home</a>
                     </li>
@@ -33,49 +34,46 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'blog:posts' %}">Posts</a>
                     </li>
+
+                    <!-- Categories Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             Categories
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item"
-                                    href="{% url 'blog:category_posts' 'technology' %}">Technology</a></li>
-                            <li><a class="dropdown-item" href="{% url 'blog:category_posts' 'travel' %}">Travel</a></li>
-                            <li><a class="dropdown-item" href="{% url 'blog:category_posts' 'health' %}">Health</a></li>
-                            <li><a class="dropdown-item" href="{% url 'blog:category_posts' 'art' %}">Art</a></li>
+                        <ul class="dropdown-menu">
+                            {% for category in categories %}
                             <li>
-                                <hr class="dropdown-divider">
+                                <a class="dropdown-item" href="{% url 'blog:category_posts' category.name %}">
+                                    {{ category.name }}
+                                </a>
                             </li>
-                            <li><a class="dropdown-item" href="{% url 'blog:posts' %}">All Posts</a></li>
+                            {% empty %}
+                            <li><span class="dropdown-item">No categories</span></li>
+                            {% endfor %}
                         </ul>
                     </li>
+
+                    <!-- Authors Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             Authors
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{% url 'blog:author_posts' 'Sarah Johnson' %}">Sarah Johnson</a></li>
-                            <li><a class="dropdown-item" href="{% url 'blog:author_posts' 'Mike Chen' %}">Mike Chen</a></li>
-                            <li><a class="dropdown-item" href="{% url 'blog:author_posts' 'Emma Rodriguez' %}">Emma Rodriguez</a></li>
-                            <li><a class="dropdown-item" href="{% url 'blog:author_posts' 'Dr. James Wilson' %}">Dr. James Wilson</a></li>
-                            <li><a class="dropdown-item" href="{% url 'blog:author_posts' 'Lisa Anderson' %}">Lisa Anderson</a></li>
+                        <ul class="dropdown-menu">
+                            {% for author in authors %}
                             <li>
-                                <hr class="dropdown-divider">
+                                <a class="dropdown-item" href="{% url 'blog:author_posts' author.username %}">
+                                    {{ author.username }}
+                                </a>
                             </li>
-                            <li><a class="dropdown-item" href="{% url 'blog:posts' %}">All Posts</a></li>
+                            {% empty %}
+                            <li><span class="dropdown-item">No authors</span></li>
+                            {% endfor %}
                         </ul>
                     </li>
                 </ul>
-            </div>
-            <!-- Add search form in navbar -->
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <!-- ... existing nav items ... -->
-                </ul>
-                <!-- Search Form -->
-                <form method="GET" action="{% url 'blog:search_posts' %}" class="d-flex ms-3">
+
+                <!-- Search Form (Right) -->
+                <form method="GET" action="{% url 'blog:search_posts' %}" class="d-flex ms-auto">
                     <input type="text" name="q" class="form-control me-2" placeholder="Search posts..." required>
                     <button type="submit" class="btn btn-outline-light">🔍</button>
                 </form>
@@ -83,11 +81,11 @@
         </div>
     </nav>
 
-    <!-- Main content -->
-    <div class="container my-4">
+    <!-- Main Content -->
+    <main class="container my-4">
         {% block content %}
         {% endblock %}
-    </div>
+    </main>
 
     <!-- Footer -->
     <footer class="bg-dark text-white py-4 mt-5">
