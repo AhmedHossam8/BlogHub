@@ -8,6 +8,12 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('contact/', views.contact, name='contact'),
 
+    # --- Authentication Routes (CBV) ---
+    path('register/', views.RegisterView.as_view(), name='register'),
+    path('login/', views.LoginView.as_view(), name='login'),
+    path('logout/', views.LogoutView.as_view(), name='logout'),
+    path('profile/update/', views.UserProfileUpdateView.as_view(), name='profile_update'),
+
     # --- CRUD Function-Based Views ---
     path('posts/', views.post_list, name='posts'),  # list all posts
     path('posts/create/', views.post_create, name='post_create'),  # create new post

@@ -73,10 +73,50 @@
                 </ul>
 
                 <!-- Search Form (Right) -->
-                <form method="GET" action="{% url 'blog:search_posts' %}" class="d-flex ms-auto">
+                <form method="GET" action="{% url 'blog:search_posts' %}" class="d-flex ms-auto me-3">
                     <input type="text" name="q" class="form-control me-2" placeholder="Search posts..." required>
                     <button type="submit" class="btn btn-outline-light">🔍</button>
                 </form>
+
+                <!-- Authentication Links (Right) -->
+                <ul class="navbar-nav ms-2">
+                    {% if user.is_authenticated %}
+                        <!-- Logged In User Menu -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                👤 {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'blog:profile_update' %}">
+                                        ⚙️ Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'blog:post_create' %}">
+                                        ✏️ Create Post
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'blog:logout' %}">
+                                        🚪 Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <!-- Not Logged In User -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'blog:login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-primary btn-sm text-white ms-2" href="{% url 'blog:register' %}">
+                                Register
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
     </nav>

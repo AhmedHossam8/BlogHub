@@ -109,6 +109,20 @@
                 <button class="btn btn-secondary btn-lg w-100 rounded-pill" disabled>Currently Unavailable</button>
                 {% endif %}
 
+                <!-- Edit and Delete Buttons (only for post author) -->
+                {% if user.is_authenticated and user == post.author %}
+                <div class="d-flex gap-2 mb-4">
+                    <a href="{% url 'blog:post_update' post.slug %}"
+                        class="btn btn-warning rounded-pill flex-grow-1">
+                        ✏️ Edit Post
+                    </a>
+                    <a href="{% url 'blog:post_delete' post.slug %}"
+                        class="btn btn-danger rounded-pill flex-grow-1">
+                        🗑️ Delete Post
+                    </a>
+                </div>
+                {% endif %}
+
                 <!-- Back Button -->
                 <div class="mt-4">
                     <a href="/posts/" class="btn btn-outline-dark rounded-pill">← Back to All Posts</a>

@@ -6,10 +6,14 @@ from django.core.paginator import Paginator
 from .models import Post, Category
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .forms import PostForm
+from .forms import PostForm, RegistrationForm, LoginForm, UserProfileForm
 from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+from django.contrib.auth.views import LoginView
+from django.contrib.auth import authenticate, login, logout
+from django.views import View
+from django.db.models import Q
 
 
 # ------------------ VIEWS ------------------
@@ -384,8 +388,9 @@ def post_detail_fbv(request, slug):
     return render(request, "blog/post_detail.html", context)
 
 
-@login_required
+@login_required(login_url='blog:login')
 def post_create(request):
+    """Create a new blog post (login required)."""
     if request.method == "POST":
         form = PostForm(request.POST)
         if form.is_valid():
@@ -394,50 +399,181 @@ def post_create(request):
             post.status = Post.Status.PUBLISHED
             post.save()
             form.save_m2m()
+            messages.success(request, 'Post created successfully!')
             return redirect("blog:post_detail", slug=post.slug)
     else:
         form = PostForm()
 
+    categories = Category.objects.all()
+    authors = User.objects.filter(posts__status='published').distinct()
+    
     context = {
-        "form": form
+        "form": form,
+        'categories': categories,
+        'authors': authors,
     }
     return render(request, "blog/post_form.html", context)
 
 
-@login_required
+@login_required(login_url='blog:login')
 def post_update(request, slug):
+    """Update a blog post (only author can update)."""
     post = get_object_or_404(Post, slug=slug)
 
+    # Check if user is the post author
     if post.author != request.user:
-        raise Http404("You can't edit this post")
+        messages.error(request, "You can only edit your own posts.")
+        return redirect("blog:post_detail", slug=post.slug)
 
     if request.method == "POST":
         form = PostForm(request.POST, instance=post)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Post updated successfully!')
             return redirect("blog:post_detail", slug=post.slug)
     else:
         form = PostForm(instance=post)
 
+    categories = Category.objects.all()
+    authors = User.objects.filter(posts__status='published').distinct()
+    
     context = {
         "form": form,
         "post": post,
+        'categories': categories,
+        'authors': authors,
     }
     return render(request, "blog/post_form.html", context)
 
 
-@login_required
+@login_required(login_url='blog:login')
 def post_delete(request, slug):
+    """Delete a blog post (only author can delete)."""
     post = get_object_or_404(Post, slug=slug)
 
+    # Check if user is the post author
     if post.author != request.user:
-        raise Http404("You can't delete this post")
+        messages.error(request, "You can only delete your own posts.")
+        return redirect("blog:post_detail", slug=post.slug)
 
     if request.method == "POST":
         post.delete()
+        messages.success(request, 'Post deleted successfully!')
         return redirect("blog:post_list")
 
+    categories = Category.objects.all()
+    authors = User.objects.filter(posts__status='published').distinct()
+    
     context = {
-        "post": post
+        "post": post,
+        'categories': categories,
+        'authors': authors,
     }
+    
     return render(request, "blog/post_confirm_delete.html", context)
+
+
+# ================== AUTHENTICATION VIEWS (CBV) ==================
+
+
+class RegisterView(CreateView):
+    """User registration using CBV."""
+    form_class = RegistrationForm
+    template_name = 'blog/register.html'
+    success_url = reverse_lazy('blog:login')
+    
+    def form_valid(self, form):
+        """Save user and create profile."""
+        response = super().form_valid(form)
+        user = form.save()
+        
+        # Create UserProfile for new user
+        from .models import UserProfile
+        UserProfile.objects.create(user=user)
+        
+        # Show success message
+        messages.success(
+            self.request,
+            f'Account created successfully! Please log in with your credentials.'
+        )
+        return response
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        categories = Category.objects.all()
+        authors = User.objects.filter(posts__status='published').distinct()
+        context.update({
+            'categories': categories,
+            'authors': authors,
+        })
+        return context
+
+
+class LoginView(LoginView):
+    """User login using CBV."""
+    template_name = 'blog/login.html'
+    success_url = reverse_lazy('blog:home')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        categories = Category.objects.all()
+        authors = User.objects.filter(posts__status='published').distinct()
+        context.update({
+            'categories': categories,
+            'authors': authors,
+        })
+        return context
+    
+    def form_valid(self, form):
+        """Handle successful login."""
+        messages.success(self.request, f'Welcome back, {form.cleaned_data.get("username")}!')
+        return super().form_valid(form)
+
+
+class LogoutView(View):
+    """Custom logout view that handles both GET and POST requests."""
+    
+    def get(self, request, *args, **kwargs):
+        """Handle GET requests for logout."""
+        logout(request)
+        messages.success(request, 'You have been logged out successfully.')
+        return redirect('blog:home')
+    
+    def post(self, request, *args, **kwargs):
+        """Handle POST requests for logout."""
+        logout(request)
+        messages.success(request, 'You have been logged out successfully.')
+        return redirect('blog:home')
+
+
+class UserProfileUpdateView(UpdateView):
+    """Update user profile information."""
+    form_class = UserProfileForm
+    template_name = 'blog/profile_form.html'
+    success_url = reverse_lazy('blog:home')
+    
+    def get_object(self, queryset=None):
+        """Get the logged-in user's profile."""
+        if not self.request.user.is_authenticated:
+            return redirect('blog:login')
+        
+        from .models import UserProfile
+        profile, created = UserProfile.objects.get_or_create(user=self.request.user)
+        return profile
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        categories = Category.objects.all()
+        authors = User.objects.filter(posts__status='published').distinct()
+        context.update({
+            'categories': categories,
+            'authors': authors,
+            'profile_user': self.request.user,
+        })
+        return context
+    
+    def form_valid(self, form):
+        """Handle successful profile update."""
+        form.save()
+        messages.success(self.request, 'Your profile has been updated successfully!')
+        return super().form_valid(form)

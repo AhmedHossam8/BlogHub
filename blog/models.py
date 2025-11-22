@@ -188,3 +188,40 @@ class Comment(models.Model):
     
     def __str__(self):
         return f'Comment by {self.author.username} on {self.post.title}'
+
+
+class UserProfile(models.Model):
+    """Extended user profile model for additional user information."""
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='profile'
+    )
+    bio = models.TextField(
+        blank=True,
+        help_text='Short biography'
+    )
+    avatar = models.FileField(
+        upload_to='avatars/',
+        blank=True,
+        null=True,
+        help_text='Profile picture'
+    )
+    website = models.URLField(
+        blank=True,
+        help_text='Personal website URL'
+    )
+    location = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text='User location'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = 'User Profile'
+        verbose_name_plural = 'User Profiles'
+    
+    def __str__(self):
+        return f'{self.user.username} Profile'
